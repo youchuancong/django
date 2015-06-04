@@ -1,0 +1,24 @@
+{% load bootstrap_toolkit %}
+<form action="{% url 'addwebchat'%}" method="post" id="add_web_form">
+    {% csrf_token %}
+    {{ form| as_bootstrap }}
+    <div class="form-actions container-fluid">
+	<div class="row-fluid">
+		<div class="span6">
+			 <button type="button" class="btn btn-primary" id="web_add_btn"  data-dismiss="modal" aria-hidden="true">确定</button>
+		</div>
+		<div class="span6">
+			<button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">取消</button>
+		</div>
+	</div>
+</div>
+</form>
+<script>
+    $("#web_add_btn").click(function(){
+      $.post("{% url 'addwebchat'%}",
+          $('#add_web_form').serialize(),
+          function(data,status){
+              window.location.reload();//刷新当前页面
+          });
+    });
+</script>

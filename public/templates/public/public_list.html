@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% block content %}
+{% load bootstrap_toolkit %}
+ {% block search %}search form{% endblock %}
+ <!-- Modal -->
+<div id="publicmodal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="width: 360px">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="myModalLabel" >公众号详情</h3>
+  </div>
+    <div class="modal-body" id="publicdetailform">
+     </div>
+
+</form>
+
+</div>
+ <script>
+ var publicdetailurl='';
+ $('#publicmodal').on('hidden', function () {
+  // do something…
+    // setTimeout("window.location.reload()()",2000);
+})
+ $('#publicmodal').on('show', function () {
+             $.ajax(publicdetailurl,{success:function(data){
+                 $("#publicdetailform").html(data);
+             }});
+})
+
+ function detail(num){
+     publicdetailurl='{% url 'public_detail' %}?num='+num;
+     //$('#addwebchatmodal').modal('toggle')
+     $('#publicmodal').modal({
+        keyboard: false,
+        backdrop:'static',
+        shown:true
+     })
+ }
+ </script>
+{% if msg_list %}
+    <table id = "msgs" class="table">
+        <tr>
+            <th>名称</th>
+            <th>微信号</th>
+            <th>类型</th>
+            <th>阅读数</th>
+            <th>电话</th>
+            <th>QQ</th>
+            <th>来源</th>
+            <th>操作</th>
+        </tr>
+    {%for msg in msg_list %}
+        <tr>
+            <td>{{msg.name}}</td>
+            <td>{{msg.num}}</td>
+            <td>{{ msg.type }}</td>
+            <td>{{ msg.readcount }}</td>
+            <td>{{ msg.phone|default_if_none:""  }}</td>
+            <td> {{ msg.qq| default_if_none:""  }}</td>
+            <td>{{ msg.source }}</td>
+            <td>
+                <a role="button" class="btn btn-primary" onclick="detail('{{ msg.num }}')">详情</a>
+                <!--<a role="button" class="btn btn-danger" onclick="del_webchat({{ msg.num }})">删除</a>-->
+            </td>
+        </tr>
+    {% endfor%}
+    </table>
+    {% if is_paginated %}
+            <div class="pagination pagination-right">
+                <ul>
+                        {% if page_obj.has_previous %}
+                            <li><a href="{{ request.path }}?source={{ source }}&page={{ page_obj.previous_page_number }}">上一页</a></li>
+                        {% endif %}
+                        {% if page_obj.has_next %}
+                            <li><a href="{{ request.path }}?source={{ source }}&page={{ page_obj.next_page_number }}">下一页</a></li>
+                        {% endif %}
+                        <li>第{{ page_obj.number }}页 ，共{{ page_obj.paginator.num_pages }}页。</li>
+
+                        <li>
+                                <select style="width: 70px" id="pageselect">
+                                    {% for i in page_obj.paginator.page_range %}
+                                    {% if page_obj.number == i %}
+                                       <option selected value="{{ i }}">{{ i }}</option>
+                                    {% else %}
+                                        <option value="{{ i }}">{{ i }}</option>
+                                    {% endif %}>
+                                    {% endfor %}
+                                </select>
+                        </li>
+                </ul>
+            </div>
+        <script>
+            $("#pageselect").change(function(){
+                var page=$(this).children('option:selected').val();//这就是selected的值
+                window.location.href="{{ request.path }}?source={{ source }}&page="+page;//页面跳转并传参
+            });
+        </script>
+    {%endif%}
+{% else %}
+<p>暂无公众号</p>
+{% endif %}
+{% endblock %}

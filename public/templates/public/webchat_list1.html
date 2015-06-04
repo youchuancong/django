@@ -1,0 +1,43 @@
+<html>
+<head><title>msg_board</title>
+<style type="text/css">
+table{border:3 solid black; border-collapse:collapse}
+table th, table td{border:2 solid black}
+</style>
+
+</head>
+<body>
+<h3>微信帐号列表:</h3>
+{% if msg_list %}
+    <table id = "msgs">
+        <tr>
+            <th>帐号</th>
+            <th>密码</th>
+        </tr>
+    {%for msg in msg_list %}
+        <tr>
+            <td>{{msg.num}}</td>
+            <td>{{msg.pwd}}</td>
+        </tr>
+    {% endfor%}
+    </table>
+    {% if is_paginated %}
+    <div class="pagination">
+        <span class="page-links">
+            {% if page_obj.has_previous %}
+                <a href="/public/webchats?page={{ page_obj.previous_page_number }}">上一页</a>
+            {% endif %}
+            {% if page_obj.has_next %}
+                <a href="/public/webchats?page={{ page_obj.next_page_number }}">下一页</a>
+            {% endif %}
+            <span class="page-current">
+                第{{ page_obj.number }}页 ，工{{ page_obj.paginator.num_pages }}页。
+            </span>
+        </span>
+    </div>
+    {%endif%}
+{% else %}
+<p>No msgs !!!</p>
+{% endif %}
+</body>
+</html>

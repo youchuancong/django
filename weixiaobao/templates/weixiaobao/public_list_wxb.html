@@ -1,0 +1,43 @@
+{% extends "public/public_list.html" %}
+ {% block search %}
+<div class="container-fluid">
+	<div class="row-fluid">
+		<div class="col-xs-6 span9">
+			<h4 class="text-left">
+				总采集：{{ total }}，今日新增：{{ today }}
+			</h4>
+		</div>
+		<div class="col-xs-6 span3">
+			 <a id="begincollect" href="#" role="button" class="btn btn-primary">开始采集</a>
+		</div>
+	</div>
+</div>
+
+ <script>
+ $('#begincollect').click(function(){
+     $('body').mask('请稍后');
+            if($('#begincollect').text()=='开始采集'){
+                 $.ajax('{% url 'wxb_start_collect' %}',{success:function(data){
+                    //修改按钮为“暂停采集”
+                     //alert(data);
+                    $('#begincollect').text('暂停采集');
+                    $('body').unmask();
+                }});
+            }else{
+                 $.ajax('{% url 'wxb_stop_collect' %}',{success:function(data){
+                    //修改按钮为“开始采集”
+                     //alert(data);
+                    $('#begincollect').text('开始采集');
+                    $('body').unmask();
+                }});
+            }
+ });
+ $.ajax('{% url 'wxb_collect_isrunning' %}',{success:function(data){
+     if(data==0){
+         $('#begincollect').text('开始采集');
+     }else{
+         $('#begincollect').text('暂停采集');
+     }
+ }});
+ </script>
+{% endblock %}

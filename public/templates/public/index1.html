@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+{% load bootstrap_toolkit %}
+<form action="{% url 'addwebchat'%}" method="post">
+    {% csrf_token %}
+    {{ form| as_bootstrap }}
+    <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </div>
+</form>
+{% endblock %}

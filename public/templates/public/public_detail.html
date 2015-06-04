@@ -1,0 +1,20 @@
+<div>
+<div class="container-fluid">
+	<div class="row-fluid">
+		<div class="span6">
+            <h4><span>{{ data.name }}</span></h4>
+            <p style="color:#999;">{{ data.num }}</p>
+            <p><span style="color: #428bca">阅读数：</span>{{ data.readcount }}</p>
+		</div>
+		<div class="span6">
+            <div style="float:right;position:relative;text-align:center;width:90px;">
+                <div style="margin-bottom:5px;">
+                    <img alt="" src="data:image/jpg;base64,{{ data.qrcode }}" style="border:1px solid #e2e2e2;height:70px;width:70px;">
+                </div>
+                <span class="static-text">微信扫描关注</span>
+            </div>
+		</div>
+	</div>
+</div>
+<p>功能介绍：{{ data.desc }}</p>
+</div>

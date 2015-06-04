@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+{% load bootstrap_toolkit %}
+{% load url from future %}
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>公众号采集平台</title>
+    <meta name="description" content="">
+    <meta name="author" content="Dylan Verheul">
+    {% bootstrap_stylesheet_tag %}
+    {% load staticfiles %}
+    {% bootstrap_stylesheet_tag "responsive" %}
+    <style type="text/css">
+        body {
+            padding-top: 60px;
+        }
+    </style>
+    <!--[if lt IE 9]>
+    <!--<script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>-->
+    <script src="{%  static "bootstrap_toolkit/js/html5.js"%}"></script>
+    <![endif]-->
+    <!--<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>-->
+    <script src="{%  static "bootstrap_toolkit/js/jquery.min.js"%}"></script>
+    <link rel="stylesheet" type="text/css" href="//192.168.17.125/public/confirm/jquery.confirm.css" media="screen" />
+    <!--<link rel="stylesheet" type="text/css" href="{%  static "public/confirm/jquery.confirm.css"%}" media="screen" />-->
+    <script src="{% static "public/confirm/jquery.confirm.js" %}"></script>
+    <link rel="stylesheet" type="text/css" href="{%  static "public/loadmask/jquery.loadmask.css"%}" media="screen" />
+    <script src="{% static "public/loadmask/jquery.loadmask.js" %}"></script>
+    {% bootstrap_javascript_tag %}
+    {% block extra_head %}{% endblock %}
+</head>
+
+<body>
+
+<div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="brand" href="#">公众号采集平台</a>
+          <div class="nav-collapse collapse">
+            <p class="navbar-text pull-right">
+              Logged in as <a href="#" class="navbar-link">Username</a>
+            </p>
+            <ul class="nav">
+              <li class="active"><a href="{% url 'index' %}">主页</a></li>
+              <li><a href="#about">About</a></li>
+              <li><a href="#contact">Contact</a></li>
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="row-fluid">
+        <div class="span3">
+          <div class="well sidebar-nav">
+            <ul class="nav nav-list">
+              <!--<li class="nav-header">公众号采集平台</li>-->
+              <li style="line-height:30px;font-size:16px"><a href="{%  url 'webchatlist'%}">微信号配置</a></li>
+              <li style="line-height:30px;font-size:16px"><a href="#">消息配置</a></li>
+              <li style="line-height:30px;font-size:16px"><a href="{% url 'publiclist_wxb' %}?source=微小宝">微小宝</a></li>
+              <li style="line-height:30px;font-size:16px"><a href="{% url 'publiclist_xmt' %}?source=新媒体排行榜">新媒体排行榜</a></li>
+              <li style="line-height:30px;font-size:16px"><a href="#">搜狗微信</a></li>
+              <li style="line-height:30px;font-size:16px"><a href="#">微博易</a></li>
+              <li style="line-height:30px;font-size:16px"><a href="{%  url 'publiclist_all'%}?source=all">公众号管理</a></li>
+            </ul>
+          </div><!--/.well -->
+        </div><!--/span-->
+        <div class="span9" id="mainbody">
+            {% bootstrap_messages %}
+
+            {% block content %}Empty page{% endblock %}
+
+            <p><hr></p>
+        </div><!--/span-->
+      </div><!--/row-->
+
+        <hr>
+
+       <footer class="row">
+        <div class="span6">
+            <p>This is <a href="https://github.com/dyve/django-bootstrap-toolkit">django-bootstrap-toolkit</a></p>
+        </div>
+        <div class="span6" style="text-align:right">
+            <p>
+                &copy; <a href="http://twitter.com/dyve">Dylan Verheul</a> 2012
+                |
+                <a href="https://raw.github.com/dyve/django-bootstrap-toolkit/master/LICENSE">license</a>
+            </p>
+        </div>
+    </footer>
+</div>
+</body>
+</html>
+
+<script>
+    console.log(window.location.pathname)
+    $("[href^='"+window.location.pathname+"']").parent().attr('class','active');
+</script>

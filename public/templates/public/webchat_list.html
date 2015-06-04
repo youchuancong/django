@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+{% block content %}
+{% load bootstrap_toolkit %}
+ <div class="container-fluid">
+	<div class="row-fluid">
+		<div class="col-xs-6 span9">
+			<h4 class="text-left">
+				微信号列表:{{ nomalCount }}个正常，{{ blockCount }}个被冻结
+			</h4>
+		</div>
+		<div class="col-xs-6 span3">
+			 <a href="#addwebchatmodal" role="button" class="btn btn-primary" data-toggle="modal" data-backdrop="static" data-keyboard="false">添加微信号</a>
+		</div>
+	</div>
+</div>
+
+ <!-- Modal -->
+<div id="addwebchatmodal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="width: 360px">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="myModalLabel" >编辑微信号</h3>
+  </div>
+    <div class="modal-body" id="add_webchatform">
+     </div>
+
+</form>
+
+</div>
+ <script>
+ var addwebchaturl='/public/addwebchat';
+ $('#addwebchatmodal').on('hidden', function () {
+  // do something…
+    // setTimeout("window.location.reload()()",2000);
+})
+ $('#addwebchatmodal').on('show', function () {
+             $.ajax(addwebchaturl,{success:function(data){
+                 $("#add_webchatform").html(data);
+             }});
+})
+
+ function edit_webchat(num){
+     addwebchaturl='/public/addwebchat?num='+num;
+     //$('#addwebchatmodal').modal('toggle')
+     $('#addwebchatmodal').modal({
+        keyboard: false,
+        backdrop:'static',
+        shown:true
+     })
+     //微信号改为不可编辑
+     setTimeout("$('#id_num').attr('readonly',true)",2000);
+ }
+ function del_webchat(num){
+      $.confirm({
+            'title'		: '删除确认',
+            'message'	: '您确定要删除该微信帐号吗？',
+            'buttons'	: {
+                '确定'	: {
+                    'class'	: 'blue',
+                    'action': function(){
+                         $.ajax('{% url 'del_webchat' %}?num='+num,{success:function(data){
+                            window.location.reload();
+                        }});
+                    }
+                },
+                '取消'	: {
+                    'class'	: 'gray',
+                    'action': function(){}	// Nothing to do in this case. You can as well omit the action property.
+                }
+            }
+        });
+
+ }
+ </script>
+{% if msg_list %}
+    <table id = "msgs" class="table">
+        <tr>
+            <th>微信号</th>
+            <th>密码</th>
+            <th>状态</th>
+            <th>操作</th>
+        </tr>
+    {%for msg in msg_list %}
+        <tr>
+            <td>{{msg.num}}</td>
+            <td>{{msg.pwd}}</td>
+            <td>
+                {% if msg.isblock %}冻结{% else %}正常{% endif %}
+            </td>
+            <td>
+                <a role="button" class="btn btn-primary" onclick="edit_webchat({{ msg.num }})">编辑</a>
+                <a role="button" class="btn btn-danger" onclick="del_webchat({{ msg.num }})">删除</a>
+            </td>
+        </tr>
+    {% endfor%}
+    </table>
+    {% if is_paginated %}
+            <div class="pagination pagination-right">
+                <ul>
+                        {% if page_obj.has_previous %}
+                            <li><a href="{{ request.path }}?page={{ page_obj.previous_page_number }}">上一页</a></li>
+                        {% endif %}
+                        {% if page_obj.has_next %}
+                            <li><a href="{{ request.path }}?page={{ page_obj.next_page_number }}">下一页</a></li>
+                        {% endif %}
+                        <li>第{{ page_obj.number }}页 ，共{{ page_obj.paginator.num_pages }}页。</li>
+
+                        <li>
+                                <select style="width: 70px" id="pageselect">
+                                    {% for i in page_obj.paginator.page_range %}
+                                    {% if page_obj.number == i %}
+                                       <option selected value="{{ i }}">{{ i }}</option>
+                                    {% else %}
+                                        <option value="{{ i }}">{{ i }}</option>
+                                    {% endif %}>
+                                    {% endfor %}
+                                </select>
+                        </li>
+                </ul>
+            </div>
+        <script>
+            $("#pageselect").change(function(){
+                var page=$(this).children('option:selected').val();//这就是selected的值
+                window.location.href="{{ request.path }}?page="+page;//页面跳转并传参
+            });
+        </script>
+    {%endif%}
+{% else %}
+<p>No msgs !!!</p>
+{% endif %}
+{% endblock %}
